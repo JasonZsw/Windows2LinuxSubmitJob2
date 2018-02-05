@@ -30,8 +30,6 @@ public class Windows2LinuxSubmitJob2Driver {
 //		
 //		conf.set("yarn.resourcemanager.scheduler.address", "192.168.230.101:8030");// 指定资源分配器  
 		
-		
-		
 		//conf.set("date", args[3]);
 		Job job = Job.getInstance(conf, "test2");
 		
