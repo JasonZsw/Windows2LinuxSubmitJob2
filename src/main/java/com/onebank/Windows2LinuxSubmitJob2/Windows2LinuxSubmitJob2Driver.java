@@ -21,17 +21,13 @@ public class Windows2LinuxSubmitJob2Driver {
 		Configuration conf = new Configuration();
 		
 //		conf.setBoolean("mapreduce.app-submission.cross-platform", true);// 配置使用跨平台提交任务
-//		
 //		conf.set("fs.defaultFS", "hdfs://192.168.230.102:9000/test000"); // 指定namenode
-//		
 //		conf.set("mapreduce.framework.name", "yarn"); // 指定使用yarn框架
-//		
 //		conf.set("yarn.resourcemanager.address", "192.168.230.101:8032"); // 指定ResourceManager
-//		
 //		conf.set("yarn.resourcemanager.scheduler.address", "192.168.230.101:8030");// 指定资源分配器  
 		
 		//conf.set("date", args[3]);
-		Job job = Job.getInstance(conf, "test2");
+		final Job job = Job.getInstance(conf, "test2");
 		
 		/*System.out.println(args[1]);
 		System.out.println(conf.get("date"));*/
@@ -48,13 +44,23 @@ public class Windows2LinuxSubmitJob2Driver {
 		job.setMapperClass(Windows2LinuxSubmitJob2Map.class);
 		job.setReducerClass(Windows2LinuxSubmitJob2Reduce.class);
 		
-		Path intputPath = new Path("hdfs://192.168.230.102:9000/test000/input/word.txt");
+		Path intputPath = new Path("hdfs://192.168.230.101:9000/test000/input/word.log");
 		FileInputFormat.addInputPath(job, intputPath);	
 		
-		Path outputPath = new Path("hdfs://192.168.230.102:9000/test000/output");
-		FileOutputFormat.setOutputPath(job, outputPath);	
-		
+		Path outputPath = new Path("hdfs://192.168.230.101:9000/test000/output4");
+		FileOutputFormat.setOutputPath(job, outputPath);
+		new Thread(){
+			public void run() {
+				while (true){
+					if(null != job.getJobID()){
+						System.out.println("------  JOBID :  " + job.getJobID());
+						break;
+					}
+				}
+			};
+		}.start();
 		boolean waitForCompletion = job.waitForCompletion(true);
+		
 		System.exit(waitForCompletion ? 0 : 1);
 	}
 }
